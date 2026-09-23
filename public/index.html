@@ -200,7 +200,6 @@
       object-fit: cover;
     }
 
-    /* Fixed Preview Image Styling */
     .preview {
       width: 100%;
       height: auto;
@@ -371,7 +370,9 @@
 
   <script>
     let stream = null, selfieData = "", gps = null;
-    const API_URL = '/api/attendance';
+
+    // 👇 AAPKA RENDER BACKEND URL YAHAN CHANGE KAREIN
+    const API_URL = 'https://your-render-app-name.onrender.com/api/attendance';
 
     function escapeHtml(s) { 
       return String(s || '').replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); 
@@ -535,7 +536,7 @@
     }
 
     render();
-</script>
+  </script>
 </body>
 
 </html>
