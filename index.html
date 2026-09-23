@@ -3,221 +3,291 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Attendance CRM</title>
   <style>
     * {
-      box-sizing: border-box
-    }
-
-    body {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: #f5f7fb;
-      color: #172033
+      padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden; /* Screen se bahar overflow rokta hai */
+      background: #f5f7fb;
+      color: #172033;
+      font-family: Inter, system-ui, Arial, sans-serif;
+    }
+
+    /* ── Header Layout ── */
     header {
       background: #172554;
       color: #fff;
-      padding: 22px 28px;
+      padding: 12px 16px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center
+      gap: 8px;
+      width: 100%;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 23px
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
     }
 
-    header span {
-      font-size: 13px;
-      opacity: .85
+    .header-brand h1 {
+      font-size: clamp(15px, 4vw, 20px);
+      font-weight: 700;
+      line-height: 1.2;
+      word-break: break-word;
     }
 
+    .header-brand span {
+      font-size: clamp(10px, 2.8vw, 12px);
+      opacity: .80;
+      line-height: 1.3;
+    }
+
+    .header-badge {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── Main Container ── */
     .container {
+      width: 100%;
       max-width: 1180px;
-      margin: 24px auto;
-      padding: 0 18px
+      margin: 0 auto;
+      padding: 12px;
     }
 
+    /* ── Summary Cards Grid ── */
     .cards {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 15px;
-      margin-bottom: 20px
+      gap: 10px;
+      margin-bottom: 14px;
+      width: 100%;
     }
 
-    .card,
-    .panel {
+    .card {
       background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 3px 16px #15203a12
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 2px 10px #15203a10;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-left: 4px solid #2563eb;
+      min-width: 0;
     }
 
     .card small {
-      color: #64748b
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .card strong {
       display: block;
-      font-size: 28px;
-      margin-top: 8px
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 800;
+      line-height: 1;
+      color: #2563eb;
     }
 
+    /* ── Responsive Panels & Grid ── */
     .grid {
       display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 18px
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 2px 10px #15203a10;
+      width: 100%;
+      min-width: 0;
     }
 
     .panel h2 {
-      font-size: 18px;
-      margin: 0 0 16px
+      font-size: 16px;
+      margin-bottom: 12px;
     }
 
+    /* ── Form Controls ── */
     label {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       display: block;
-      margin: 12px 0 6px
+      margin: 10px 0 4px;
     }
 
-    input,
-    button,
-    select {
-      font: inherit
-    }
-
-    input,
-    select {
+    input, button, select {
+      font: inherit;
       width: 100%;
-      padding: 11px;
+      box-sizing: border-box;
+    }
+
+    input, select {
+      padding: 10px;
       border: 1px solid #d8dee9;
-      border-radius: 9px
+      border-radius: 8px;
+      font-size: 13px;
     }
 
     button {
       border: 0;
-      border-radius: 9px;
-      padding: 11px 15px;
+      border-radius: 8px;
+      padding: 10px 14px;
       cursor: pointer;
-      font-weight: 700
+      font-weight: 700;
+      font-size: 13px;
     }
 
     .primary {
       background: #2563eb;
-      color: #fff
+      color: #fff;
     }
 
     .secondary {
       background: #e8eefc;
-      color: #1d4ed8
+      color: #1d4ed8;
     }
 
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px
+      gap: 10px;
+      width: 100%;
     }
 
+    /* ── Camera Area ── */
     .camera {
       width: 100%;
       aspect-ratio: 4/3;
       background: #0f172a;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #94a3b8
+      color: #94a3b8;
+      font-size: 13px;
     }
 
     video {
       width: 100%;
       height: 100%;
-      object-fit: cover
+      object-fit: cover;
     }
 
     .preview {
       width: 100%;
-      max-height: 270px;
+      max-height: 220px;
       object-fit: cover;
-      border-radius: 10px;
-      display: none
+      border-radius: 8px;
+      display: none;
+      margin-top: 8px;
     }
 
     .actions {
       display: flex;
-      gap: 9px;
-      margin-top: 13px;
-      flex-wrap: wrap
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .actions button {
+      flex: 1;
     }
 
     .status {
-      margin-top: 12px;
-      padding: 11px;
-      border-radius: 9px;
+      margin-top: 10px;
+      padding: 9px 10px;
+      border-radius: 8px;
       background: #f1f5f9;
-      font-size: 13px
+      font-size: 12px;
+      line-height: 1.4;
+      word-break: break-word;
     }
 
+    /* ── Table Fixes (Scrollable Mobile) ── */
     .tablewrap {
-      overflow: auto;
-      margin-top: 18px
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 12px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 760px
+      min-width: 480px; /* Reduced min-width */
     }
 
-    .table th,
-    .table td {
-      padding: 12px;
+    .table th, .table td {
+      padding: 8px;
       border-bottom: 1px solid #edf0f5;
       text-align: left;
-      font-size: 13px
+      font-size: 12px;
     }
 
     .table th {
-      color: #64748b
+      color: #64748b;
+      white-space: nowrap;
     }
 
     .badge {
-      padding: 5px 9px;
-      border-radius: 20px;
+      padding: 3px 7px;
+      border-radius: 12px;
       background: #dcfce7;
       color: #166534;
       font-weight: 700;
-      font-size: 12px
+      font-size: 11px;
     }
 
     a {
       color: #2563eb;
-      text-decoration: none
+      text-decoration: none;
     }
 
-    @media(max-width:800px) {
-
-      .cards,
+    /* ── Media Queries ── */
+    @media (max-width: 900px) {
       .grid {
-        grid-template-columns: 1fr 1fr
+        grid-template-columns: 1fr; /* Stack panels on tablet/mobile */
       }
-
-      .grid {
-        grid-template-columns: 1fr
+      .cards {
+        grid-template-columns: repeat(2, 1fr); /* 2x2 cards */
       }
     }
 
-    @media(max-width:520px) {
-
-      .cards,
+    @media (max-width: 500px) {
       .row {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr; /* Stack inputs */
+        gap: 0;
+      }
+      .actions {
+        flex-direction: column; /* Stack buttons */
       }
     }
   </style>
@@ -225,8 +295,13 @@
 
 <body>
   <header>
-    <h1>Attendance CRM</h1><span>Selfie + GPS Attendance Management</span>
+    <div class="header-brand">
+      <h1>Attendance CRM</h1>
+      <span>Selfie + GPS Attendance Management</span>
+    </div>
+    <div class="header-badge">&#128197; Live</div>
   </header>
+
   <div class="container">
     <div class="cards">
       <div class="card"><small>Total Employees</small><strong id="total">0</strong></div>
@@ -243,7 +318,9 @@
           <div><label>Employee Name</label><input id="empName" placeholder="e.g. Florish Rathore"></div>
         </div>
         <label>Selfie</label>
-        <div class="camera"><video id="video" autoplay playsinline></video><span id="cameraText">Camera preview</span>
+        <div class="camera">
+          <video id="video" autoplay playsinline></video>
+          <span id="cameraText">Camera preview</span>
         </div>
         <div class="actions">
           <button class="secondary" onclick="startCamera()">Open Camera</button>
@@ -254,7 +331,9 @@
         <label>Location</label>
         <button class="secondary" onclick="getLocation()">Get Current Location</button>
         <div id="locationStatus" class="status">Location not captured.</div>
-        <div class="actions"><button class="primary" onclick="submitAttendance()">Submit Attendance</button></div>
+        <div class="actions" style="margin-top:12px;">
+          <button class="primary" onclick="submitAttendance()">Submit Attendance</button>
+        </div>
         <div id="message" class="status">Please capture selfie and location before submitting.</div>
       </section>
 
@@ -290,13 +369,15 @@
     const key = "attendanceCRMRecords";
     function records() { return JSON.parse(localStorage.getItem(key) || "[]") }
     function save(r) { localStorage.setItem(key, JSON.stringify(r)) }
+    
     async function startCamera() {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
         video.srcObject = stream; cameraText.style.display = "none";
         message.textContent = "Camera is ready.";
-      } catch (e) { message.textContent = "Camera permission denied or unavailable. Please allow camera access." }
+      } catch (e) { message.textContent = "Camera permission denied or unavailable." }
     }
+
     function takeSelfie() {
       if (!stream) { message.textContent = "Please open the camera first."; return }
       canvas.width = video.videoWidth; canvas.height = video.videoHeight;
@@ -305,14 +386,16 @@
       preview.src = selfieData; preview.style.display = "block";
       message.textContent = "Selfie captured successfully.";
     }
+
     function getLocation() {
-      if (!navigator.geolocation) { locationStatus.textContent = "Geolocation is not supported by this browser."; return }
-      locationStatus.textContent = "Getting your current location...";
+      if (!navigator.geolocation) { locationStatus.textContent = "Geolocation is not supported."; return }
+      locationStatus.textContent = "Getting location...";
       navigator.geolocation.getCurrentPosition(p => {
         gps = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: Math.round(p.coords.accuracy) };
-        locationStatus.innerHTML = `Latitude: ${gps.lat.toFixed(6)} | Longitude: ${gps.lng.toFixed(6)} | Accuracy: ±${gps.accuracy}m`;
-      }, () => locationStatus.textContent = "Location permission denied or unavailable.", { enableHighAccuracy: true, timeout: 10000 });
+        locationStatus.innerHTML = `Lat: ${gps.lat.toFixed(4)} | Lng: ${gps.lng.toFixed(4)} | Acc: ±${gps.accuracy}m`;
+      }, () => locationStatus.textContent = "Location permission denied.", { enableHighAccuracy: true, timeout: 10000 });
     }
+
     function submitAttendance() {
       const id = empId.value.trim(), name = empName.value.trim();
       if (!id || !name || !selfieData || !gps) { message.textContent = "Employee ID, name, selfie and location are required."; return }
@@ -320,6 +403,7 @@
       r.unshift({ id, name, time: now.toISOString(), status: "Present", lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy, selfie: selfieData });
       save(r); render(); message.textContent = "Attendance submitted successfully.";
     }
+
     function render() {
       const all = records(), q = search.value.toLowerCase(), today = new Date().toDateString();
       const filtered = all.filter(x => (!q || (x.name + " " + x.id).toLowerCase().includes(q)) &&
@@ -328,16 +412,18 @@
       recordsEl.innerHTML = filtered.map(x => {
         const d = new Date(x.time);
         return `<tr><td><b>${escapeHtml(x.name)}</b><br><small>${escapeHtml(x.id)}</small></td>
-  <td>${d.toLocaleString()}</td><td><span class="badge">${x.status}</span></td>
-  <td><a target="_blank" href="https://www.google.com/maps?q=${x.lat},${x.lng}">View Map</a><br><small>${x.lat.toFixed(5)}, ${x.lng.toFixed(5)}</small></td>
-  <td><img src="${x.selfie}" style="width:55px;height:55px;object-fit:cover;border-radius:8px"></td></tr>`
-      }).join("") || '<tr><td colspan="5">No attendance records yet.</td></tr>';
+  <td>${d.toLocaleDateString()}<br><small>${d.toLocaleTimeString()}</small></td><td><span class="badge">${x.status}</span></td>
+  <td><a target="_blank" href="https://www.google.com/maps?q=${x.lat},${x.lng}">View Map</a></td>
+  <td><img src="${x.selfie}" style="width:40px;height:40px;object-fit:cover;border-radius:6px"></td></tr>`
+      }).join("") || '<tr><td colspan="5">No records yet.</td></tr>';
+      
       const todayRows = all.filter(x => new Date(x.time).toDateString() === today);
       total.textContent = new Set(all.map(x => x.id)).size;
       present.textContent = todayRows.length;
       late.textContent = 0;
       percent.textContent = (todayRows.length ? Math.min(100, Math.round(todayRows.length / Math.max(1, new Set(all.map(x => x.id)).size) * 100)) : 0) + "%";
     }
+
     function escapeHtml(s) { return s.replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])) }
     render();
   </script>
