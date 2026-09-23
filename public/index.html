@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Attendance CRM</title>
+  <!-- Toastify CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <style>
     * {
       box-sizing: border-box;
@@ -368,6 +370,8 @@
     </div>
   </div>
 
+  <!-- Toastify JS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script>
     let stream = null, selfieData = "", gps = null;
 
@@ -463,11 +467,18 @@
       }
     }
 
-    // 2. Submit attendance to Express/MongoDB backend
+    // 2. Submit attendance to Express/MongoDB backend with Toastify
     async function submitAttendance() {
       const id = empId.value.trim(), name = empName.value.trim();
       if (!id || !name || !selfieData || !gps) { 
         message.textContent = "Employee ID, name, selfie and location are required."; 
+        Toastify({
+          text: "⚠️ Please fill all details, selfie & location!",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+          style: { background: "#ca8a04" }
+        }).showToast();
         return; 
       }
 
@@ -495,13 +506,39 @@
 
         if (response.ok) {
           message.textContent = "Attendance submitted & saved to Database successfully!";
+          
+          // Toastify Success Notification
+          Toastify({
+            text: "🎉 Attendance saved successfully!",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: { background: "#166534" }
+          }).showToast();
+
           render(); 
         } else {
           message.textContent = "Failed: " + (result.message || "Server Error");
+          
+          // Toastify Error Notification
+          Toastify({
+            text: "❌ Failed: " + (result.message || "Server Error"),
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            style: { background: "#dc2626" }
+          }).showToast();
         }
       } catch (err) {
         console.error(err);
         message.textContent = "Error connecting to server.";
+        Toastify({
+          text: "❌ Error connecting to server.",
+          duration: 3000,
+          gravity: "top",
+          position: "right",
+          style: { background: "#dc2626" }
+        }).showToast();
       }
     }
 
