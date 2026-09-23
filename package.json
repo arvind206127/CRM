@@ -4,6 +4,7 @@
   "description": "A browser-based attendance CRM demo with: - Employee ID and name - Selfie capture using device camera - Current GPS location with accuracy - Date/time capture - Attendance records and dashboard - Search/filter - Google Maps location link - Local browser storage for demo purposes",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
