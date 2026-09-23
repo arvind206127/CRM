@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Attendance CRM</title>
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033
+    }
+
+    header {
+      background: #172554;
+      color: #fff;
+      padding: 22px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 23px
+    }
+
+    header span {
+      font-size: 13px;
+      opacity: .85
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 24px auto;
+      padding: 0 18px
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px
+    }
+
+    .card,
+    .panel {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 3px 16px #15203a12
+    }
+
+    .card small {
+      color: #64748b
+    }
+
+    .card strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 8px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px
+    }
+
+    .panel h2 {
+      font-size: 18px;
+      margin: 0 0 16px
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      display: block;
+      margin: 12px 0 6px
+    }
+
+    input,
+    button,
+    select {
+      font: inherit
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d8dee9;
+      border-radius: 9px
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .primary {
+      background: #2563eb;
+      color: #fff
+    }
+
+    .secondary {
+      background: #e8eefc;
+      color: #1d4ed8
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .camera {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #0f172a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 270px;
+      object-fit: cover;
+      border-radius: 10px;
+      display: none
+    }
+
+    .actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 13px;
+      flex-wrap: wrap
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 11px;
+      border-radius: 9px;
+      background: #f1f5f9;
+      font-size: 13px
+    }
+
+    .tablewrap {
+      overflow: auto;
+      margin-top: 18px
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px
+    }
+
+    .table th,
+    .table td {
+      padding: 12px;
+      border-bottom: 1px solid #edf0f5;
+      text-align: left;
+      font-size: 13px
+    }
+
+    .table th {
+      color: #64748b
+    }
+
+    .badge {
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #dcfce7;
+      color: #166534;
+      font-weight: 700;
+      font-size: 12px
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none
+    }
+
+    @media(max-width:800px) {
+
+      .cards,
+      .grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media(max-width:520px) {
+
+      .cards,
+      .row {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Attendance CRM</h1><span>Selfie + GPS Attendance Management</span>
+  </header>
+  <div class="container">
+    <div class="cards">
+      <div class="card"><small>Total Employees</small><strong id="total">0</strong></div>
+      <div class="card"><small>Present Today</small><strong id="present">0</strong></div>
+      <div class="card"><small>Late / Other</small><strong id="late">0</strong></div>
+      <div class="card"><small>Attendance %</small><strong id="percent">0%</strong></div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Mark Attendance</h2>
+        <div class="row">
+          <div><label>Employee ID</label><input id="empId" placeholder="e.g. EMP001"></div>
+          <div><label>Employee Name</label><input id="empName" placeholder="e.g. Florish Rathore"></div>
+        </div>
+        <label>Selfie</label>
+        <div class="camera"><video id="video" autoplay playsinline></video><span id="cameraText">Camera preview</span>
+        </div>
+        <div class="actions">
+          <button class="secondary" onclick="startCamera()">Open Camera</button>
+          <button class="primary" onclick="takeSelfie()">Capture Selfie</button>
+        </div>
+        <canvas id="canvas" style="display:none"></canvas>
+        <img id="preview" class="preview">
+        <label>Location</label>
+        <button class="secondary" onclick="getLocation()">Get Current Location</button>
+        <div id="locationStatus" class="status">Location not captured.</div>
+        <div class="actions"><button class="primary" onclick="submitAttendance()">Submit Attendance</button></div>
+        <div id="message" class="status">Please capture selfie and location before submitting.</div>
+      </section>
+
+      <section class="panel">
+        <h2>Attendance Records</h2>
+        <div class="row">
+          <input id="search" placeholder="Search employee..." oninput="render()">
+          <select id="filter" onchange="render()">
+            <option value="all">All Records</option>
+            <option value="today">Today</option>
+          </select>
+        </div>
+        <div class="tablewrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Location</th>
+                <th>Selfie</th>
+              </tr>
+            </thead>
+            <tbody id="records"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let stream = null, selfieData = "", gps = null;
+    const key = "attendanceCRMRecords";
+    function records() { return JSON.parse(localStorage.getItem(key) || "[]") }
+    function save(r) { localStorage.setItem(key, JSON.stringify(r)) }
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        video.srcObject = stream; cameraText.style.display = "none";
+        message.textContent = "Camera is ready.";
+      } catch (e) { message.textContent = "Camera permission denied or unavailable. Please allow camera access." }
+    }
+    function takeSelfie() {
+      if (!stream) { message.textContent = "Please open the camera first."; return }
+      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+      canvas.getContext("2d").drawImage(video, 0, 0);
+      selfieData = canvas.toDataURL("image/jpeg", .82);
+      preview.src = selfieData; preview.style.display = "block";
+      message.textContent = "Selfie captured successfully.";
+    }
+    function getLocation() {
+      if (!navigator.geolocation) { locationStatus.textContent = "Geolocation is not supported by this browser."; return }
+      locationStatus.textContent = "Getting your current location...";
+      navigator.geolocation.getCurrentPosition(p => {
+        gps = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: Math.round(p.coords.accuracy) };
+        locationStatus.innerHTML = `Latitude: ${gps.lat.toFixed(6)} | Longitude: ${gps.lng.toFixed(6)} | Accuracy: ±${gps.accuracy}m`;
+      }, () => locationStatus.textContent = "Location permission denied or unavailable.", { enableHighAccuracy: true, timeout: 10000 });
+    }
+    function submitAttendance() {
+      const id = empId.value.trim(), name = empName.value.trim();
+      if (!id || !name || !selfieData || !gps) { message.textContent = "Employee ID, name, selfie and location are required."; return }
+      const now = new Date(), r = records();
+      r.unshift({ id, name, time: now.toISOString(), status: "Present", lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy, selfie: selfieData });
+      save(r); render(); message.textContent = "Attendance submitted successfully.";
+    }
+    function render() {
+      const all = records(), q = search.value.toLowerCase(), today = new Date().toDateString();
+      const filtered = all.filter(x => (!q || (x.name + " " + x.id).toLowerCase().includes(q)) &&
+        (filter.value === "all" || new Date(x.time).toDateString() === today));
+      recordsEl = document.getElementById("records");
+      recordsEl.innerHTML = filtered.map(x => {
+        const d = new Date(x.time);
+        return `<tr><td><b>${escapeHtml(x.name)}</b><br><small>${escapeHtml(x.id)}</small></td>
+  <td>${d.toLocaleString()}</td><td><span class="badge">${x.status}</span></td>
+  <td><a target="_blank" href="https://www.google.com/maps?q=${x.lat},${x.lng}">View Map</a><br><small>${x.lat.toFixed(5)}, ${x.lng.toFixed(5)}</small></td>
+  <td><img src="${x.selfie}" style="width:55px;height:55px;object-fit:cover;border-radius:8px"></td></tr>`
+      }).join("") || '<tr><td colspan="5">No attendance records yet.</td></tr>';
+      const todayRows = all.filter(x => new Date(x.time).toDateString() === today);
+      total.textContent = new Set(all.map(x => x.id)).size;
+      present.textContent = todayRows.length;
+      late.textContent = 0;
+      percent.textContent = (todayRows.length ? Math.min(100, Math.round(todayRows.length / Math.max(1, new Set(all.map(x => x.id)).size) * 100)) : 0) + "%";
+    }
+    function escapeHtml(s) { return s.replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])) }
+    render();
+  </script>
+</body>
+
+</html>
