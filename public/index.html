@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Attendance CRM</title>
+  <title>Attendance CRM - Login</title>
   <!-- Toastify CSS -->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
   <style>
@@ -14,8 +14,7 @@
       padding: 0;
     }
 
-    html,
-    body {
+    html, body {
       width: 100%;
       max-width: 100%;
       overflow-x: hidden;
@@ -24,15 +23,40 @@
       font-family: Inter, system-ui, Arial, sans-serif;
     }
 
+    /* Auth Wrapper styles */
+    #authContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .auth-card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-card h2 {
+      margin-bottom: 16px;
+      font-size: 22px;
+      color: #172554;
+      text-align: center;
+    }
+
     header {
       background: #172554;
       color: #fff;
-      padding: 12px 16px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
       width: 100%;
+      box-sizing: border-box;
     }
 
     .header-brand {
@@ -40,32 +64,39 @@
       flex-direction: column;
       gap: 2px;
       min-width: 0;
-      flex: 1;
+      flex: unset;
     }
 
     .header-brand h1 {
-      font-size: clamp(15px, 4vw, 20px);
+      font-size: 20px;
       font-weight: 700;
       line-height: 1.2;
-      word-break: break-word;
+      margin: 0;
+      white-space: nowrap;
     }
 
     .header-brand span {
-      font-size: clamp(10px, 2.8vw, 12px);
-      opacity: .80;
-      line-height: 1.3;
+      font-size: 12px;
+      opacity: 0.85;
+      margin: 0;
+      white-space: nowrap;
     }
 
     .header-badge {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: #fff;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 6px 14px;
       border-radius: 20px;
-      white-space: nowrap;
+      cursor: pointer;
+      width: auto !important;
       flex-shrink: 0;
+    }
+
+    .header-badge:hover {
+      background: rgba(255, 255, 255, 0.25);
     }
 
     .container {
@@ -92,23 +123,17 @@
       flex-direction: column;
       gap: 4px;
       border-left: 4px solid #2563eb;
-      min-width: 0;
     }
 
     .card small {
       color: #64748b;
       font-size: 11px;
       font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .card strong {
-      display: block;
       font-size: clamp(18px, 4vw, 26px);
       font-weight: 800;
-      line-height: 1;
       color: #2563eb;
     }
 
@@ -126,7 +151,6 @@
       padding: 14px;
       box-shadow: 0 2px 10px #15203a10;
       width: 100%;
-      min-width: 0;
     }
 
     .panel h2 {
@@ -141,16 +165,13 @@
       margin: 10px 0 4px;
     }
 
-    input,
-    button,
-    select {
+    input, button, select {
       font: inherit;
       width: 100%;
       box-sizing: border-box;
     }
 
-    input,
-    select {
+    input, select {
       padding: 10px;
       border: 1px solid #d8dee9;
       border-radius: 8px;
@@ -164,6 +185,7 @@
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
+      margin-top: 8px;
     }
 
     .primary {
@@ -204,7 +226,6 @@
 
     .preview {
       width: 100%;
-      height: auto;
       aspect-ratio: 4/3;
       object-fit: contain;
       background: #000;
@@ -230,14 +251,12 @@
       background: #f1f5f9;
       font-size: 12px;
       line-height: 1.4;
-      word-break: break-word;
     }
 
     .tablewrap {
       width: 100%;
       overflow-x: auto;
       margin-top: 12px;
-      -webkit-overflow-scrolling: touch;
     }
 
     .table {
@@ -246,8 +265,7 @@
       min-width: 480px;
     }
 
-    .table th,
-    .table td {
+    .table th, .table td {
       padding: 8px;
       border-bottom: 1px solid #edf0f5;
       text-align: left;
@@ -268,105 +286,117 @@
       font-size: 11px;
     }
 
-    a {
+    .toggle-link {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
       color: #2563eb;
-      text-decoration: none;
+      cursor: pointer;
     }
 
     @media (max-width: 900px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 500px) {
-      .row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
+      .grid { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="header-brand">
-      <h1>Attendance CRM</h1>
-      <span>Selfie + GPS Attendance Management</span>
+
+  <!-- AUTH SECTION (Login / Signup) -->
+  <div id="authContainer">
+    <div class="auth-card">
+      <h2 id="authTitle">Employee Login</h2>
+      
+      <div id="nameField" style="display:none;">
+        <label>Full Name</label>
+        <input id="authName" placeholder="Enter your name">
+      </div>
+
+      <label id="idOrEmailLabel">Employee ID</label>
+      <input id="authIdOrEmail" placeholder="e.g. EMP101">
+
+      <label>Password</label>
+      <input type="password" id="authPassword" placeholder="Enter password">
+
+      <button class="primary" id="authBtn" onclick="handleAuth()">Login</button>
+      <div class="toggle-link" id="toggleAuthMode" onclick="toggleAuthMode()">Don't have an account? Sign up</div>
     </div>
-    <div class="header-badge">&#128197; Live</div>
-  </header>
+  </div>
 
-  <div class="container">
-    <div class="cards">
-      <div class="card"><small>Total Employees</small><strong id="total">0</strong></div>
-      <div class="card"><small>Present Today</small><strong id="present">0</strong></div>
-      <div class="card"><small>Late / Other</small><strong id="late">0</strong></div>
-      <div class="card"><small>Attendance %</small><strong id="percent">0%</strong></div>
-    </div>
+  <!-- MAIN DASHBOARD (Hidden by default until logged in) -->
+  <div id="mainDashboard" style="display:none;">
+    <header>
+      <div class="header-brand">
+        <h1>Attendance CRM</h1>
+        <span>Selfie + GPS Attendance Management</span>
+      </div>
+      <button class="header-badge" onclick="logout()">Logout</button>
+    </header>
 
-    <div class="grid">
-      <section class="panel">
-        <h2>Mark Attendance</h2>
-        <div class="row">
-          <div><label>Employee ID</label><input id="empId" placeholder="e.g. EMP001"></div>
-          <div><label>Employee Name</label><input id="empName" placeholder="e.g. Florish Rathore"></div>
-        </div>
-        <label>Selfie</label>
-        <div class="camera">
-          <video id="video" autoplay playsinline></video>
-          <span id="cameraText">Camera preview</span>
-        </div>
-        <div class="actions">
-          <button class="secondary" onclick="startCamera()">Open Camera</button>
-          <button class="primary" onclick="takeSelfie()">Capture Selfie</button>
-        </div>
-        <canvas id="canvas" style="display:none"></canvas>
-        <label id="previewLabel" style="display:none; margin-top: 10px;">Captured Selfie Preview:</label>
-        <img id="preview" class="preview">
-        
-        <label>Location</label>
-        <button class="secondary" onclick="getLocation()">Get Current Location</button>
-        <div id="locationStatus" class="status">Location not captured.</div>
-        
-        <div class="actions" style="margin-top:12px;">
-          <button class="primary" onclick="submitAttendance()">Submit Attendance</button>
-        </div>
-        <div id="message" class="status">Please capture selfie and location before submitting.</div>
-      </section>
+    <div class="container">
+      <div class="cards">
+        <div class="card"><small>Total Employees</small><strong id="total">0</strong></div>
+        <div class="card"><small>Present Today</small><strong id="present">0</strong></div>
+        <div class="card"><small>Late / Other</small><strong id="late">0</strong></div>
+        <div class="card"><small>Attendance %</small><strong id="percent">0%</strong></div>
+      </div>
 
-      <section class="panel">
-        <h2>Attendance Records</h2>
-        <div class="row">
-          <input id="search" placeholder="Search employee..." oninput="render()">
-          <select id="filter" onchange="render()">
-            <option value="all">All Records</option>
-            <option value="today">Today</option>
-          </select>
-        </div>
-        <div class="tablewrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Employee</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-                <th>Location & Address</th>
-                <th>Selfie</th>
-              </tr>
-            </thead>
-            <tbody id="records"></tbody>
-          </table>
-        </div>
-      </section>
+      <div class="grid">
+        <section class="panel">
+          <h2>Mark Attendance</h2>
+          <div class="row">
+            <div><label>Employee ID</label><input id="empId" readonly placeholder="e.g. EMP001"></div>
+            <div><label>Employee Name</label><input id="empName" readonly placeholder="e.g. Arvind Kumar"></div>
+          </div>
+          <label>Selfie</label>
+          <div class="camera">
+            <video id="video" autoplay playsinline></video>
+            <span id="cameraText">Camera preview</span>
+          </div>
+          <div class="actions">
+            <button class="secondary" onclick="startCamera()">Open Camera</button>
+            <button class="primary" onclick="takeSelfie()">Capture Selfie</button>
+          </div>
+          <canvas id="canvas" style="display:none"></canvas>
+          <label id="previewLabel" style="display:none; margin-top: 10px;">Captured Selfie Preview:</label>
+          <img id="preview" class="preview">
+          
+          <label>Location</label>
+          <button class="secondary" onclick="getLocation()">Get Current Location</button>
+          <div id="locationStatus" class="status">Location not captured.</div>
+          
+          <div class="actions" style="margin-top:12px;">
+            <button class="primary" onclick="submitAttendance()">Submit Attendance</button>
+          </div>
+          <div id="message" class="status">Please capture selfie and location before submitting.</div>
+        </section>
+
+        <section class="panel">
+          <h2>Attendance Records</h2>
+          <div class="row">
+            <input id="search" placeholder="Search employee..." oninput="render()">
+            <select id="filter" onchange="render()">
+              <option value="all">All Records</option>
+              <option value="today">Today</option>
+            </select>
+          </div>
+          <div class="tablewrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th>Location & Address</th>
+                  <th>Selfie</th>
+                </tr>
+              </thead>
+              <tbody id="records"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 
@@ -374,9 +404,77 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script>
     let stream = null, selfieData = "", gps = null;
+    let isSignupMode = false;
 
-    // Live Render Server URL
-    const API_BASE = 'https://crm-nxed.onrender.com';
+    // Local / Render Server URL
+    const API_BASE = '';
+
+    // Check Login State on load
+    window.onload = () => {
+      const savedEmpId = localStorage.getItem('empId');
+      const savedName = localStorage.getItem('empName');
+      if (savedEmpId) {
+        showDashboard(savedEmpId, savedName);
+      }
+    };
+
+    function toggleAuthMode() {
+      isSignupMode = !isSignupMode;
+      document.getElementById('authTitle').textContent = isSignupMode ? 'Employee Sign Up' : 'Employee Login';
+      document.getElementById('nameField').style.display = isSignupMode ? 'block' : 'none';
+      document.getElementById('idOrEmailLabel').textContent = isSignupMode ? 'Email Address' : 'Employee ID';
+      document.getElementById('authBtn').textContent = isSignupMode ? 'Sign Up' : 'Login';
+      document.getElementById('toggleAuthMode').textContent = isSignupMode ? 'Already have an account? Login' : "Don't have an account? Sign up";
+    }
+
+    async function handleAuth() {
+      const password = document.getElementById('authPassword').value.trim();
+      const idOrEmail = document.getElementById('authIdOrEmail').value.trim();
+      const name = document.getElementById('authName').value.trim();
+
+      if (!password || !idOrEmail || (isSignupMode && !name)) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      const endpoint = isSignupMode ? '/api/auth/signup' : '/api/auth/login';
+      const payload = isSignupMode 
+        ? { name, email: idOrEmail, password } 
+        : { empId: idOrEmail, password };
+
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('empId', data.empId);
+          localStorage.setItem('empName', data.name);
+          showDashboard(data.empId, data.name);
+        } else {
+          alert(data.message || "Authentication failed");
+        }
+      } catch (err) {
+        alert("Server connection error");
+      }
+    }
+
+    function showDashboard(id, name) {
+      document.getElementById('authContainer').style.display = 'none';
+      document.getElementById('mainDashboard').style.display = 'block';
+      document.getElementById('empId').value = id;
+      document.getElementById('empName').value = name;
+      render();
+    }
+
+    function logout() {
+      localStorage.removeItem('empId');
+      localStorage.removeItem('empName');
+      location.reload();
+    }
 
     function escapeHtml(s) { 
       return String(s || '').replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); 
@@ -394,7 +492,7 @@
     }
 
     function takeSelfie() {
-      if (!stream) { message.textContent = "Please open the camera first."; return }
+      if (!stream) { message.textContent = "Please open the camera first."; return; }
       canvas.width = video.videoWidth || 640; 
       canvas.height = video.videoHeight || 480;
       canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -406,24 +504,11 @@
     }
 
     async function reverseGeocode(lat, lng) {
-      const isAtNXOne = (lat >= 28.5950 && lat <= 28.6050 && lng >= 77.4250 && lng <= 77.4370);
-      if (isAtNXOne) {
-        return "NX One, Techzone 4, Greater Noida West, Uttar Pradesh";
-      }
-
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
         const data = await res.json();
         if (data && data.display_name) return data.display_name;
       } catch (e) {}
-
-      try {
-        const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
-        const data = await res.json();
-        const parts = [data.locality || data.city, data.principalSubdivision, data.countryName].filter(Boolean);
-        if (parts.length > 0) return parts.join(", ");
-      } catch (e) {}
-
       return `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
     }
 
@@ -432,117 +517,91 @@
         locationStatus.textContent = "Geolocation is not supported.";
         return;
       }
-
       locationStatus.textContent = "Getting coordinates...";
-
       navigator.geolocation.getCurrentPosition(async (p) => {
         const lat = p.coords.latitude;
         const lng = p.coords.longitude;
         const accuracy = Math.round(p.coords.accuracy);
-
         locationStatus.textContent = "Fetching address...";
-
         const addressText = await reverseGeocode(lat, lng);
-
         gps = { lat, lng, accuracy, address: addressText };
-
         locationStatus.innerHTML = `<b>Address:</b> ${escapeHtml(addressText)}<br><small style="color:#64748b">Lat: ${lat.toFixed(4)} | Lng: ${lng.toFixed(4)} | Acc: ±${accuracy}m</small>`;
-
-      }, (error) => {
-        locationStatus.textContent = "Location permission denied or unavailable.";
+      }, () => {
+        locationStatus.textContent = "Location permission denied.";
       }, { enableHighAccuracy: true, timeout: 10000 });
     }
 
-    // --- API Integration Functions ---
-
-    // 1. Fetch records from backend
     async function fetchRecords() {
       try {
-        const res = await fetch(`${API_BASE}/api/attendance`);
+        const res = await fetch(`${API_BASE}/api/attendance/all`);
         const result = await res.json();
         return Array.isArray(result) ? result : (result.data || []);
       } catch (err) {
-        console.error('API Fetch Error:', err);
         return [];
       }
     }
 
-    // 2. Submit attendance to Express/MongoDB backend with Toastify
     async function submitAttendance() {
       const id = empId.value.trim(), name = empName.value.trim();
       if (!id || !name || !selfieData || !gps) { 
         message.textContent = "Employee ID, name, selfie and location are required."; 
         Toastify({
-          text: "⚠️ Please fill all details, selfie & location!",
+          text: "Please fill all required fields and capture selfie/location!",
           duration: 3000,
-          gravity: "top",
-          position: "right",
-          style: { background: "#ca8a04" }
+          backgroundColor: "#ff5f6d",
         }).showToast();
         return; 
       }
-
       message.textContent = "Submitting attendance...";
-
       try {
-        const response = await fetch(`${API_BASE}/api/attendance`, {
+        const response = await fetch(`${API_BASE}/api/attendance/submit`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             empId: id,
             empName: name,
             status: 'Present',
-            location: {
-              address: gps.address || 'N/A',
-              lat: gps.lat,
-              lng: gps.lng,
-              accuracy: gps.accuracy
-            },
+            location: { address: gps.address || 'N/A', lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy },
             selfie: selfieData
           })
         });
-
         const result = await response.json();
-
         if (response.ok) {
-          message.textContent = "Attendance submitted & saved to Database successfully!";
+          message.textContent = "Attendance recorded successfully!";
           
-          // Toastify Success Notification
+          // Toastify Success Message
           Toastify({
-            text: "🎉 Attendance saved successfully!",
-            duration: 3000,
+            text: "Attendance marked successfully! Logging out...",
+            duration: 2000,
+            close: true,
             gravity: "top",
             position: "right",
-            style: { background: "#166534" }
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
           }).showToast();
 
-          render(); 
+          // 2 seconds delay ke baad auto logout
+          setTimeout(() => {
+            logout();
+          }, 2000);
+
         } else {
           message.textContent = "Failed: " + (result.message || "Server Error");
-          
-          // Toastify Error Notification
           Toastify({
-            text: "❌ Failed: " + (result.message || "Server Error"),
+            text: "Failed: " + (result.message || "Server Error"),
             duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: { background: "#dc2626" }
+            backgroundColor: "#ff5f6d",
           }).showToast();
         }
       } catch (err) {
-        console.error(err);
         message.textContent = "Error connecting to server.";
         Toastify({
-          text: "❌ Error connecting to server.",
+          text: "Error connecting to server.",
           duration: 3000,
-          gravity: "top",
-          position: "right",
-          style: { background: "#dc2626" }
+          backgroundColor: "#ff5f6d",
         }).showToast();
       }
     }
 
-    // 3. Render table with live database data
     async function render() {
       const all = await fetchRecords();
       const q = search.value.toLowerCase();
@@ -562,7 +621,7 @@
           <td><span class="badge">${x.status || 'Present'}</span></td>
           <td><small style="display:block; max-width: 180px; font-size: 11px; margin-bottom: 2px;">${escapeHtml(x.location?.address || '')}</small><a target="_blank" href="https://www.google.com/maps?q=${x.location?.lat},${x.location?.lng}">View Map</a></td>
           <td><img src="${x.selfie}" style="width:40px;height:40px;object-fit:cover;border-radius:6px"></td>
-        </tr>`
+        </tr>`;
       }).join("") || '<tr><td colspan="5">No records found.</td></tr>';
 
       const todayRows = all.filter(x => new Date(x.createdAt || Date.now()).toDateString() === today);
@@ -571,9 +630,6 @@
       late.textContent = 0;
       percent.textContent = (todayRows.length ? Math.min(100, Math.round(todayRows.length / Math.max(1, new Set(all.map(x => x.empId)).size) * 100)) : 0) + "%";
     }
-
-    render();
   </script>
 </body>
-
 </html>
