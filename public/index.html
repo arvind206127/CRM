@@ -371,11 +371,11 @@
 
   <script>
     let stream = null, selfieData = "", gps = null;
-    const key = "attendanceCRMRecords";
+    const API_URL = '/api/attendance';
 
-    function records() { return JSON.parse(localStorage.getItem(key) || "[]") }
-    function save(r) { localStorage.setItem(key, JSON.stringify(r)) }
-    function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])) }
+    function escapeHtml(s) { 
+      return String(s || '').replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m])); 
+    }
 
     async function startCamera() {
       try {
@@ -401,7 +401,6 @@
     }
 
     async function reverseGeocode(lat, lng) {
-      // Direct Geofencing for NX One / Greater Noida West
       const isAtNXOne = (lat >= 28.5950 && lat <= 28.6050 && lng >= 77.4250 && lng <= 77.4370);
       if (isAtNXOne) {
         return "NX One, Techzone 4, Greater Noida West, Uttar Pradesh";
@@ -449,45 +448,94 @@
       }, { enableHighAccuracy: true, timeout: 10000 });
     }
 
-    function submitAttendance() {
+    // --- API Integration Functions ---
+
+    // 1. Fetch records from MongoDB backend
+    async function fetchRecords() {
+      try {
+        const res = await fetch(`${API_URL}/all`);
+        const result = await res.json();
+        return result.success ? result.data : [];
+      } catch (err) {
+        console.error('API Fetch Error:', err);
+        return [];
+      }
+    }
+
+    // 2. Submit attendance to Express/MongoDB backend
+    async function submitAttendance() {
       const id = empId.value.trim(), name = empName.value.trim();
       if (!id || !name || !selfieData || !gps) { 
         message.textContent = "Employee ID, name, selfie and location are required."; 
         return; 
       }
-      const now = new Date(), r = records();
-      r.unshift({ id, name, time: now.toISOString(), status: "Present", lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy, address: gps.address || "N/A", selfie: selfieData });
-      save(r); 
-      render(); 
-      message.textContent = "Attendance submitted successfully.";
+
+      message.textContent = "Submitting attendance...";
+
+      try {
+        const response = await fetch(`${API_URL}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            empId: id,
+            empName: name,
+            status: 'Present',
+            location: {
+              address: gps.address || 'N/A',
+              lat: gps.lat,
+              lng: gps.lng,
+              accuracy: gps.accuracy
+            },
+            selfie: selfieData
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          message.textContent = "Attendance submitted & saved to Database successfully!";
+          render(); 
+        } else {
+          message.textContent = "Failed: " + result.message;
+        }
+      } catch (err) {
+        console.error(err);
+        message.textContent = "Error connecting to server.";
+      }
     }
 
-    function render() {
-      const all = records(), q = search.value.toLowerCase(), today = new Date().toDateString();
-      const filtered = all.filter(x => (!q || (x.name + " " + x.id).toLowerCase().includes(q)) &&
-        (filter.value === "all" || new Date(x.time).toDateString() === today));
-      
+    // 3. Render table with live database data
+    async function render() {
+      const all = await fetchRecords();
+      const q = search.value.toLowerCase();
+      const today = new Date().toDateString();
+
+      const filtered = all.filter(x => 
+        (!q || (x.empName + " " + x.empId).toLowerCase().includes(q)) &&
+        (filter.value === "all" || new Date(x.createdAt).toDateString() === today)
+      );
+
       const recordsEl = document.getElementById("records");
       recordsEl.innerHTML = filtered.map(x => {
-        const d = new Date(x.time);
+        const d = new Date(x.createdAt);
         return `<tr>
-          <td><b>${escapeHtml(x.name)}</b><br><small>${escapeHtml(x.id)}</small></td>
+          <td><b>${escapeHtml(x.empName)}</b><br><small>${escapeHtml(x.empId)}</small></td>
           <td>${d.toLocaleDateString()}<br><small>${d.toLocaleTimeString()}</small></td>
-          <td><span class="badge">${x.status}</span></td>
-          <td><small style="display:block; max-width: 180px; font-size: 11px; margin-bottom: 2px;">${escapeHtml(x.address || '')}</small><a target="_blank" href="https://www.google.com/maps?q=${x.lat},${x.lng}">View Map</a></td>
+          <td><span class="badge">${x.status || 'Present'}</span></td>
+          <td><small style="display:block; max-width: 180px; font-size: 11px; margin-bottom: 2px;">${escapeHtml(x.location?.address || '')}</small><a target="_blank" href="https://www.google.com/maps?q=${x.location?.lat},${x.location?.lng}">View Map</a></td>
           <td><img src="${x.selfie}" style="width:40px;height:40px;object-fit:cover;border-radius:6px"></td>
         </tr>`
-      }).join("") || '<tr><td colspan="5">No records yet.</td></tr>';
+      }).join("") || '<tr><td colspan="5">No records found.</td></tr>';
 
-      const todayRows = all.filter(x => new Date(x.time).toDateString() === today);
-      total.textContent = new Set(all.map(x => x.id)).size;
+      const todayRows = all.filter(x => new Date(x.createdAt).toDateString() === today);
+      total.textContent = new Set(all.map(x => x.empId)).size;
       present.textContent = todayRows.length;
       late.textContent = 0;
-      percent.textContent = (todayRows.length ? Math.min(100, Math.round(todayRows.length / Math.max(1, new Set(all.map(x => x.id)).size) * 100)) : 0) + "%";
+      percent.textContent = (todayRows.length ? Math.min(100, Math.round(todayRows.length / Math.max(1, new Set(all.map(x => x.empId)).size) * 100)) : 0) + "%";
     }
 
     render();
-  </script>
+</script>
 </body>
 
 </html>
