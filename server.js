@@ -35,8 +35,9 @@ const attendanceSchema = new mongoose.Schema({
 const Attendance = mongoose.model('Attendance', attendanceSchema);
 
 // --- 1. Root Route: Serve index.html ---
+// --- 1. Root Route: Serve index.html from public folder ---
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // --- 2. API GET Route ---
