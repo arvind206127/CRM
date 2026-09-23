@@ -1,33 +1,46 @@
-require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
-const attendanceRoutes = require('./routes/attendanceRoutes');
+const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// CORS aur Payload size fix
 app.use(cors());
-// Base64 Selfie Image size badi hoti hai, isliye limit 10mb rakhi hai
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve Frontend Files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Connect to MongoDB (MongoDB Atlas Connection String ya Local)
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/attendance_db';
-
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected Successfully!'))
-  .catch((err) => console.error('MongoDB Connection Error:', err));
-
-// API Routes
-app.use('/api/attendance', attendanceRoutes);
-
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Attendance Schema
+const attendanceSchema = new mongoose.Schema({
+  empId: String,
+  empName: String,
+  status: { type: String, default: 'Present' },
+  location: Object,
+  selfie: String,
+  createdAt: { type: Date, default: Date.now }
 });
+
+const Attendance = mongoose.model('Attendance', attendanceSchema);
+
+// 1. GET Route (/api/attendance) - Iske na hone se 404 aa raha tha
+app.get('/api/attendance', async (req, res) => {
+  try {
+    const records = await Attendance.find().sort({ createdAt: -1 });
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// 2. POST Route (/api/attendance)
+app.post('/api/attendance', async (req, res) => {
+  try {
+    const record = new Attendance(req.body);
+    await record.save();
+    res.status(201).json({ success: true, data: record });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
